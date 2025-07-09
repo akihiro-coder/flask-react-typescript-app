@@ -43,19 +43,20 @@ def create_app():
     from app.models import VotingRoom, VotingOption, Vote
 
     # ルート登録
+    from app.routes import register_routes
     register_routes(app)
 
-    return app
+    # WebSocketイベント登録
+    from app.sockets import events
 
-def register_routes(app):
-    """ルートを登録"""
+    # 基本ルート
     @app.route('/')
     def index():
         return {
             'message': 'Real-time Voting App API',
             'status': 'running',
             'version': '1.0.0',
-            'database': 'connected' if db else 'disconnected'
+            'database': 'connected'
         }
 
     @app.route('/health')
@@ -74,3 +75,5 @@ def register_routes(app):
             'database': db_status,
             'redis': redis_status
         }
+
+    return app
